@@ -16,7 +16,7 @@ Write-Host -ForegroundColor White "discord.gg/narcocity"
 Write-Host ""
 
 Write-Host "  Beende FiveM Prozesse..." -ForegroundColor Yellow
-Get-Process FiveM, FXServer -ErrorAction SilentlyContinue | Stop-Process -Force
+Get-Process FiveM -ErrorAction SilentlyContinue | Stop-Process -Force
 
 $cachePath = Join-Path $env:LocalAppData "FiveM\FiveM.app\cache"
 Write-Host "  Suche nach FiveM in $cachePath" -ForegroundColor Yellow
