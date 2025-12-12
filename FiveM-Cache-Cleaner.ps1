@@ -18,7 +18,7 @@ Write-Host ""
 Write-Host "  Beende FiveM Prozesse..." -ForegroundColor Yellow
 Get-Process FiveM -ErrorAction SilentlyContinue | Stop-Process -Force
 
-$cachePath = Join-Path $env:LocalAppData "FiveM\FiveM.app\cache"
+$cachePath = Join-Path $env:LocalAppData "FiveM\FiveM.app\data\cache"
 Write-Host "  Suche nach FiveM in $cachePath" -ForegroundColor Yellow
 
 if (Test-Path $cachePath) {
