@@ -18,7 +18,37 @@ Write-Host ""
 Write-Host "  Beende FiveM Prozesse..." -ForegroundColor Yellow
 Get-Process FiveM -ErrorAction SilentlyContinue | Stop-Process -Force
 
-$cachePath = Join-Path $env:LocalAppData "FiveM\FiveM.app\data\cache"
+# ######################################################################
+function Get-FiveMInstallPath {
+    $proc = Get-Process -Name "FiveM" -ErrorAction SilentlyContinue
+    if ($proc -and $proc.Path) {
+        return Split-Path $proc.Path -Parent
+    }
+
+    $uninstallRoots = @(
+        "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*",
+        "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*",
+        "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*"
+    )
+
+    $entry = Get-ItemProperty $uninstallRoots -ErrorAction SilentlyContinue |
+        Where-Object {
+            $_.DisplayName -and $_.DisplayName -like "*FiveM*"
+        } |
+        Select-Object -First 1
+
+    if ($entry.InstallLocation) {
+        return $entry.InstallLocation
+    }
+
+    throw "FiveM installation path could not be determined."
+}
+
+$fivemInstallPath = Get-FiveMInstallPath
+$cachePath = Join-Path $fivemInstallPath "data\cache"
+# ######################################################################
+
+# $cachePath = Join-Path $env:LocalAppData "FiveM\FiveM.app\data\cache"
 Write-Host "  Suche nach FiveM in $cachePath" -ForegroundColor Yellow
 
 if (Test-Path $cachePath) {
