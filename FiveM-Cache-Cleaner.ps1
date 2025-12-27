@@ -41,7 +41,8 @@ function Get-FiveMInstallPath {
         return $entry.InstallLocation
     }
 
-    throw "FiveM installation path could not be determined."
+    # throw "FiveM Installation konnte nicht gefunden werden."
+    Write-Host "  FiveM Installation konnte nicht gefunden werden." -ForegroundColor Red
 }
 
 $fivemInstallPath = Get-FiveMInstallPath
@@ -56,7 +57,7 @@ if (Test-Path $cachePath) {
     Remove-Item $cachePath -Recurse -Force
     Write-Host "  Cache erfolgreich geleert." -ForegroundColor Green
 } else {
-    Write-Host "  Cache-Verzeichnis nicht gefunden. Hast du FiveM wo anders Installiert?" -ForegroundColor Red
+    Write-Host "  Cache-Verzeichnis nicht gefunden. Falls dies ein Fehler ist, dann melde es flomkk" -ForegroundColor Red
 }
 
 Write-Host ""
