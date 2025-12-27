@@ -18,11 +18,16 @@ Write-Host ""
 Write-Host "  Beende FiveM Prozesse..." -ForegroundColor Yellow
 Get-Process FiveM -ErrorAction SilentlyContinue | Stop-Process -Force
 
-# ######################################################################
 function Get-FiveMInstallPath {
+    Write-Host "  Suche nach FiveM Installation..." -ForegroundColor Yellow
     $proc = Get-Process -Name "FiveM" -ErrorAction SilentlyContinue
     if ($proc -and $proc.Path) {
-        return Split-Path $proc.Path -Parent
+        $exeDir = Split-Path $proc.Path -Parent
+
+        if ($exeDir -notmatch "FiveM\.app$") {
+            $exeDir = Join-Path $exeDir "FiveM.app"
+        }
+        return $exeDir
     }
 
     $uninstallRoots = @(
@@ -38,26 +43,28 @@ function Get-FiveMInstallPath {
         Select-Object -First 1
 
     if ($entry.InstallLocation) {
-        return $entry.InstallLocation
+        $installPath = $entry.InstallLocation
+
+        if ($installPath -notmatch "FiveM\.app$") {
+            $installPath = Join-Path $installPath "FiveM.app"
+        }
+        
+        Write-Host "  FiveM Installation gefunden." -ForegroundColor Green
+        return $installPath
     }
 
-    # throw "FiveM Installation konnte nicht gefunden werden."
     Write-Host "  FiveM Installation konnte nicht gefunden werden." -ForegroundColor Red
 }
 
 $fivemInstallPath = Get-FiveMInstallPath
 $cachePath = Join-Path $fivemInstallPath "data\cache"
-# ######################################################################
-
-# $cachePath = Join-Path $env:LocalAppData "FiveM\FiveM.app\data\cache"
-Write-Host "  Suche nach FiveM in $cachePath" -ForegroundColor Yellow
 
 if (Test-Path $cachePath) {
     Write-Host "  Leere Cache-Verzeichnis: $cachePath" -ForegroundColor Yellow
     Remove-Item $cachePath -Recurse -Force
     Write-Host "  Cache erfolgreich geleert." -ForegroundColor Green
 } else {
-    Write-Host "  Cache-Verzeichnis nicht gefunden. Falls dies ein Fehler ist, dann melde es flomkk" -ForegroundColor Red
+    Write-Host "  Cache-Verzeichnis nicht gefunden. Es sieht so aus als wäre dein Cache schon leer!" -ForegroundColor Red
 }
 
 Write-Host ""
