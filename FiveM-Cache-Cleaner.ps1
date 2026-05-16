@@ -77,6 +77,12 @@ function CloseFiveMProcesses {
 
 function Clear-FiveMCache {
     $fivemInstallPath = Get-FiveMInstallPath
+
+    if (-not $fivemInstallPath) {
+        Write-Host "  [!] Cache konnte nicht geleert werden: FiveM Installation nicht gefunden." -ForegroundColor Red
+        return
+    }
+    
     $cacheFolders = @{
         "Cache"             = Join-Path $fivemInstallPath "data\cache"
         "Server-Cache"      = Join-Path $fivemInstallPath "data\server-cache"
